@@ -67,7 +67,7 @@ class iRacingClient:
 
         friend_data = {}
         for driver in data['fsRacers']:
-            name = clean(driver['name'])
+            name = unquote(driver['name'])
             friend_data[name] = currently_driving(driver)
 
         return friend_data
@@ -102,7 +102,7 @@ class iRacingClient:
         series = {}
         for entry in data:
             if entry['category'] == 2:
-                series[entry['seasonid']] = clean(entry['seriesname'])
+                series[entry['seasonid']] = unquote(entry['seriesname'])
 
         return series
 
@@ -137,22 +137,29 @@ class iRacingClient:
         url = IRACING_OPENSESSION_DRIVERS.format(subsession=subsession)
         response = self.session.get(url)
         data = response.json()
-        return [clean(el['dn']) for el in data['rows']]
+        return [unquote(el['dn']) for el in data['rows']]
 
     def session_drivers(self, subsession):
         url = IRACING_SESSION_DRIVERS.format(subsession=subsession)
         response = self.session.get(url)
         data = response.json()
-        return [clean(el['dn']) for el in data['rows']]
+        return [unquote(el['dn']) for el in data['rows']]
 
 
 def currently_driving(driver_data):
     return 'sessionStatus' in driver_data and driver_data['sessionStatus'] != 'none'
 
 
-def clean(s):
+def unquote(s):
     s = s.replace('+', ' ')
     return urllib.parse.unquote(s)
+
+def clean(text):
+    text = text.replace('\n', '')
+    text = text.replace('\t', '')
+    text = text.replace('\r', '')
+    text = text.replace("\'", "\"")
+    return text
 
 def make_dict(s):
     pairs = [x.split(":") for x in s.split(",")]
