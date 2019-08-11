@@ -13,11 +13,17 @@ IRACING_WATCH_SUBSESSIONS = "https://members.iracing.com/membersite/member/GetSp
 IRACING_EVENT_PAGE = "https://members.iracing.com/membersite/member/EventResult.do?&subsessionid={subsession}"
 IRACING_SUBSESSION_DRIVER_LAPS = "https://members.iracing.com/membersite/member/GetLaps?&subsessionid={subsession}&groupid={custid}&simsesnum=0"
 
+class LoginFailed(Exception):
+    pass
+
 class iRacingClient:
     
-    def __init__(self, credentials):
+    def __init__(self, username, password):
         self.session = requests.session()
-        self.session.post(IRACING_LOGIN, data=credentials)
+        credentials = { "username": username, "password": password }
+        response = self.session.post(IRACING_LOGIN, data=credentials)
+        if response.url == "https://members.iracing.com:443/membersite/failedlogin.jsp":
+            raise LoginFailed
 
     def driver_status(self):
         friend_data = self.friend_data()
