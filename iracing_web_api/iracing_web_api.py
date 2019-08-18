@@ -59,9 +59,14 @@ class iRacingClient:
             lap_arr = []
             
             for a, b in zip(laps[1:], laps[2:]):
-                delta = (b['ses_time'] - a['ses_time']) / 10000
-                all_lap_times.append(delta)
-                lap_arr.append(delta)
+                lap_flags = int(b['flags'])
+                if not bool(lap_flags & 3):
+                    # lap is valid and no tow occured
+                    delta = (b['ses_time'] - a['ses_time']) / 10000
+                    all_lap_times.append(delta)
+                    lap_arr.append(delta)
+
+                
                 
             grid[name] = {'irating': irating, 'custid': custid, 'pos': pos, 'laps': lap_arr}
         
@@ -181,3 +186,4 @@ def get_name(s):
     name = s[start+2:end-1]
     name = name.replace("+", " ")
     return urllib.parse.unquote(name)
+    
