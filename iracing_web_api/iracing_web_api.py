@@ -91,7 +91,7 @@ class iRacingClient:
         subsessions = {}
         for series_id, series_name in series.items():
             for subsession, event_type in self.practice_subsessions(series_id).items():
-                subsessions[subsession] = {'series_id': series_id, 'series_name': series_name, 'event_type': event_type }
+                subsessions[subsession] = build_session_info(series_id, series_name, event_type, subsession)
         
         for subsession, info in subsessions.items():
             for driver in self.open_session_drivers(subsession):
@@ -140,7 +140,7 @@ class iRacingClient:
             else:
                 event_type = 'Other'
 
-            subsessions[subsession_id] = {'series_id': series_id, 'series_name': series_name, 'event_type': event_type }
+            subsessions[subsession_id] = build_session_info(series_id, series_name, event_type, subsession_id):
 
         return subsessions
 
@@ -186,4 +186,8 @@ def get_name(s):
     name = s[start+2:end-1]
     name = name.replace("+", " ")
     return urllib.parse.unquote(name)
+
+
+def build_session_info(series_id, series_name, event_type, subsession):
+    return {'series_id': series_id, 'series_name': series_name, 'event_type': event_type, 'subsession': str(subsession)[-3:] }
     
