@@ -140,7 +140,7 @@ class iRacingClient:
             else:
                 event_type = 'Other'
 
-            subsessions[subsession_id] = build_session_info(series_id, series_name, event_type, subsession_id):
+            subsessions[subsession_id] = build_session_info(series_id, series_name, event_type, subsession_id)
 
         return subsessions
 
