@@ -2,6 +2,7 @@ import requests
 import re
 import json
 import urllib.parse
+from itertools import chain
 
 IRACING_LOGIN = 'https://members.iracing.com/membersite/Login'
 IRACING_FRIENDS= "http://members.iracing.com/membersite/member/GetDriverStatus?friends=1&studied=1&blacklisted=1"
@@ -29,7 +30,7 @@ class iRacingClient:
         friend_data = self.friend_data()
         session_data = self.session_data()
         driver_status = {}
-        for driver in friend_data:
+        for driver in chain(friend_data, ["William Scullion"]):
             if driver in session_data:
                 driver_status[driver] = session_data[driver]
             else:
